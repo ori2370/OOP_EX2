@@ -42,15 +42,22 @@ public class Ex2_1 {
 
     public static int getNumOfLinesThreads(String[] fileNames) {
         int lineCounter = 0;
+        threadFileHelper[] threads = new threadFileHelper[fileNames.length];
         for (int i = 0; i < fileNames.length; i++) {
-            threadFileHelper thread = new threadFileHelper(fileNames[i],i);
-            thread.start();
-            lineCounter+=thread.getLineCounter();
+            threads[i] = new threadFileHelper(fileNames[i], i);
+            threads[i].start();
+         }    
+         for (int i = 0; i < fileNames.length; i++) {
+            try {
+            threads[i].join();
+            lineCounter += threads[i].getLineCounter();
+                 } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+         }
 
+             return lineCounter;
         }
-
-        return lineCounter;
-    }
 
 
 
