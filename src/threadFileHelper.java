@@ -3,14 +3,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class threadFileHelper implements Runnable{
+public class threadFileHelper implements Runnable {
     private String fileName;
     private int threadNumber;
-    public int lineCounter=0;
+    public int lineCounter = 0;
 
-    public threadFileHelper(String fileName,int threadNumber) {
+    public threadFileHelper(String fileName, int threadNumber) {
         this.fileName = fileName;
         this.threadNumber = threadNumber;
+    }
+
+    public threadFileHelper() {
     }
 
     public int getLineCounter() {
@@ -22,7 +25,7 @@ public class threadFileHelper implements Runnable{
     }
 
     @Override
-    public void run (){
+    public void run() {
         int Counter = 0;
         File file = new File(fileName);
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -34,7 +37,7 @@ public class threadFileHelper implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.lineCounter=Counter;
+        this.lineCounter = Counter;
     }
-    }
+}
 
