@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class threadFileHelper extends Thread{
+public class threadFileHelper implements Runnable{
     private String fileName;
     private int threadNumber;
     public int lineCounter=0;

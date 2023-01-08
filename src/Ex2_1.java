@@ -45,39 +45,15 @@ public class Ex2_1 {
         threadFileHelper[] threads = new threadFileHelper[fileNames.length];
         for (int i = 0; i < fileNames.length; i++) {
             threads[i] = new threadFileHelper(fileNames[i], i);
-            threads[i].start();
-         }    
-         for (int i = 0; i < fileNames.length; i++) {
-            try {
-            threads[i].join();
+            threads[i].run();
             lineCounter += threads[i].getLineCounter();
-                 } catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
-         }
-
-             return lineCounter;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return lineCounter;
+    }
 
 
     public static void main(String[] args) {
-        String[] texts = createTextFiles(3,1,10);
+        String[] texts = createTextFiles(3, 1, 10);
         long startTime1 = System.nanoTime();
         int result1 = getNumOfLines(texts);
         long endTime1 = System.nanoTime();
@@ -86,8 +62,8 @@ public class Ex2_1 {
         int result2 = getNumOfLinesThreads(texts);
         long endTime2 = System.nanoTime();
         long duration2 = endTime2 - startTime2;
-        System.out.println("Duration1: " + duration1 + " nanoseconds" + result1);
-        System.out.println("Duration2: " + duration2 + " nanoseconds" + result2);
+        System.out.printf("Duration1:%d nanoseconds,result: %d\n", duration1, result1);
+        System.out.printf("Duration2:%d nanoseconds,result: %d\n", duration2, result2);
 
     }
 }
