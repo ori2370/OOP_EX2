@@ -4,24 +4,17 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class threadFileHelper implements Runnable {
-    private String fileName;
-    private int threadNumber;
+    private final String fileName;
     public int lineCounter = 0;
 
-    public threadFileHelper(String fileName, int threadNumber) {
+    public threadFileHelper(String fileName) {
         this.fileName = fileName;
-        this.threadNumber = threadNumber;
+
     }
 
-    public threadFileHelper() {
-    }
 
     public int getLineCounter() {
         return lineCounter;
-    }
-
-    public void setLineCounter(int lineCounter) {
-        this.lineCounter = lineCounter;
     }
 
     @Override
@@ -37,7 +30,12 @@ public class threadFileHelper implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.lineCounter = Counter;
+        addToLineCounter(Counter);
     }
-}
 
+
+    public synchronized void addToLineCounter(int count) {
+        lineCounter += count;
+    }
+
+}

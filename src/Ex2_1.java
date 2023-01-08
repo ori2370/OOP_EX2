@@ -6,7 +6,7 @@ import java.util.concurrent.*;
 public class Ex2_1 {
     public static String[] createTextFiles(int n, int seed, int bound) {
         String[] fileNames = new String[n];
-        Random rand = new Random();
+        Random rand = new Random(seed);
 
         for (int i = 0; i < n; i++) {
             File file = new File("file_" + (i + 1) + ".txt");
@@ -28,8 +28,8 @@ public class Ex2_1 {
 
     public static int getNumOfLines(String[] fileNames) {
         int lineCounter = 0;
-        for (int i = 0; i < fileNames.length; i++) {
-            try (BufferedReader br = new BufferedReader(new FileReader(fileNames[i]))) {
+        for (String fileName : fileNames) {
+            try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
                 String line = br.readLine();
                 while (line != null) {
                     lineCounter++;
@@ -44,11 +44,20 @@ public class Ex2_1 {
 
     public int getNumOfLinesThreads(String[] fileNames) {
         int lineCounter = 0;
-        threadFileHelper[] threads = new threadFileHelper[fileNames.length];
+        threadFileHelper[] helpers = new threadFileHelper[fileNames.length];
+        Thread[] threads = new Thread[fileNames.length];
         for (int i = 0; i < fileNames.length; i++) {
-            threads[i] = new threadFileHelper(fileNames[i], i);
-            threads[i].run();
-            lineCounter += threads[i].getLineCounter();
+            helpers[i] = new threadFileHelper(fileNames[i]);
+            threads[i] = new Thread(helpers[i]);
+            threads[i].start();
+        }
+        for (int i = 0; i < fileNames.length; i++) {
+            try {
+                threads[i].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            lineCounter += helpers[i].getLineCounter();
         }
         return lineCounter;
     }
@@ -71,7 +80,7 @@ public class Ex2_1 {
 
 
     public static void main(String[] args) {
-        String[] texts = createTextFiles(3000, 99, 750000);
+        String[] texts = createTextFiles(3000, 1, 10000);
         long startTime1 = System.currentTimeMillis();
         int result1 = getNumOfLines(texts);
         long endTime1 = System.currentTimeMillis();
