@@ -64,18 +64,18 @@ public class Ex2_1 {
         return lineCounter;
     }
 
-    public int getNumOfLinesThreadPool(String[] fileNames) throws ExecutionException, InterruptedException {
+    public int getNumOfLinesThreadPool(String[] fileNames) {
         int lineCounter = 0;
         ExecutorService executor = Executors.newFixedThreadPool(fileNames.length);
-        List<Future<Integer>> list = new ArrayList<>();
-        for(int i=0; i< fileNames.length; i++){
-            Callable<Integer> callable = new MyCallable(fileNames[i]);
+        List<Future<Integer>> results = new ArrayList<>();
+        for (String fileName : fileNames) {
+            Callable<Integer> callable = new MyCallable(fileName);
             Future<Integer> future = executor.submit(callable);
-            list.add(future);
+            results.add(future);
         }
-        for (Future<Integer> number : list) {
+        for (Future<Integer> result : results) {
             try {
-                lineCounter += number.get();
+                lineCounter += result.get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
@@ -86,7 +86,7 @@ public class Ex2_1 {
     }
 
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) {
         String[] texts = createTextFiles(3000, 1, 1500);
         long startTime1 = System.currentTimeMillis();
         int result1 = getNumOfLines(texts);
