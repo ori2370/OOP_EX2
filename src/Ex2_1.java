@@ -64,7 +64,7 @@ public class Ex2_1 {
         return lineCounter;
     }
 
-    public int getNumOfLinesThreadPool(String[] fileNames) throws ExecutionException, InterruptedException {
+    public int getNumOfLinesThreadPool(String[] fileNames) {
         int lineCounter = 0;
         ExecutorService executor = Executors.newFixedThreadPool(fileNames.length);
         List<Future<Integer>> list = new ArrayList<>();
