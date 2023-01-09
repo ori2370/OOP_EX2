@@ -1,4 +1,6 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -62,25 +64,30 @@ public class Ex2_1 {
         return lineCounter;
     }
 
-    public int getNumOfLinesThreadPool(String[] fileNames) {
-        ExecutorService threadPool = Executors.newFixedThreadPool(fileNames.length);
+    public int getNumOfLinesThreadPool(String[] fileNames) throws ExecutionException, InterruptedException {
         int lineCounter = 0;
-        for (String fileName : fileNames) {
-            threadPoolFileHelper lineCounterTask = new threadPoolFileHelper(fileName);
-            Future<Integer> result = threadPool.submit(lineCounterTask);
+        ExecutorService executor = Executors.newFixedThreadPool(fileNames.length);
+        List<Future<Integer>> list = new ArrayList<>();
+        for(int i=0; i< fileNames.length; i++){
+            Callable<Integer> callable = new MyCallable(fileNames[i]);
+            Future<Integer> future = executor.submit(callable);
+            list.add(future);
+        }
+        for (Future<Integer> number : list) {
             try {
-                lineCounter += result.get();
+                lineCounter += number.get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }
-        threadPool.shutdown();
+        executor.shutdown();
+
         return lineCounter;
     }
 
 
-    public static void main(String[] args) {
-        String[] texts = createTextFiles(3000, 1, 10000);
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        String[] texts = createTextFiles(3000, 1, 1500);
         long startTime1 = System.currentTimeMillis();
         int result1 = getNumOfLines(texts);
         long endTime1 = System.currentTimeMillis();
