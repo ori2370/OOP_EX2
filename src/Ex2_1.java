@@ -1,6 +1,5 @@
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Random;
 import java.util.concurrent.*;
 
@@ -67,11 +66,10 @@ public class Ex2_1 {
     public int getNumOfLinesThreadPool(String[] fileNames) {
         int lineCounter = 0;
         ExecutorService executor = Executors.newFixedThreadPool(fileNames.length);
-        List<Future<Integer>> results = new ArrayList<>();
-        for (String fileName : fileNames) {
-            Callable<Integer> callable = new MyCallable(fileName);
-            Future<Integer> future = executor.submit(callable);
-            results.add(future);
+        Future<Integer>[] results = new Future[fileNames.length];
+        for (int i = 0; i < fileNames.length; i++) {
+            Callable<Integer> callable = new MyCallable(fileNames[i]);
+            results[i] = executor.submit(callable);
         }
         for (Future<Integer> result : results) {
             try {
@@ -87,7 +85,7 @@ public class Ex2_1 {
 
 
     public static void main(String[] args) {
-        String[] texts = createTextFiles(3000, 1, 1500);
+        String[] texts = createTextFiles(3000, 1, 10000);
         long startTime1 = System.currentTimeMillis();
         int result1 = getNumOfLines(texts);
         long endTime1 = System.currentTimeMillis();
@@ -101,7 +99,6 @@ public class Ex2_1 {
         int result3 = ex2_1.getNumOfLinesThreadPool(texts);
         long endTime3 = System.currentTimeMillis();
         long duration3 = endTime3 - startTime3;
-
         System.out.printf("Duration1:%d ms,result: %d\n", duration1, result1);
         System.out.printf("Duration2:%d ms,result: %d\n", duration2, result2);
         System.out.printf("Duration2:%d ms,result: %d\n", duration3, result3);
