@@ -14,7 +14,7 @@ public class Ex2_1 {
             fileNames[i] = "file_" + (i + 1) + ".txt";
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
                 int randomInt = rand.nextInt(bound);
-                String line = "hara al reshatot";
+                String line = "Threads Assignment";
                 for (int j = 0; j < randomInt; j++) {
                     bw.write(line);
                     bw.newLine();
@@ -45,11 +45,9 @@ public class Ex2_1 {
 
     public int getNumOfLinesThreads(String[] fileNames) {
         int lineCounter = 0;
-        threadFileHelper[] helpers = new threadFileHelper[fileNames.length];
-        Thread[] threads = new Thread[fileNames.length];
+        threadFileHelper[] threads = new threadFileHelper[fileNames.length];
         for (int i = 0; i < fileNames.length; i++) {
-            helpers[i] = new threadFileHelper(fileNames[i]);
-            threads[i] = new Thread(helpers[i]);
+            threads[i] = new threadFileHelper(fileNames[i]);
             threads[i].start();
         }
         for (int i = 0; i < fileNames.length; i++) {
@@ -58,7 +56,7 @@ public class Ex2_1 {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            lineCounter += helpers[i].getLineCounter();
+            lineCounter += threads[i].getLineCounter();
         }
         return lineCounter;
     }

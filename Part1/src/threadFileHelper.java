@@ -1,41 +1,34 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
-public class threadFileHelper implements Runnable {
+public class threadFileHelper extends Thread {
     private final String fileName;
-    public int lineCounter = 0;
+    private AtomicInteger lineCounter = new AtomicInteger();
 
     public threadFileHelper(String fileName) {
         this.fileName = fileName;
 
     }
 
-
     public int getLineCounter() {
-        return lineCounter;
+        return lineCounter.get();
     }
 
     @Override
     public void run() {
-        int Counter = 0;
-        File file = new File(fileName);
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line = br.readLine();
             while (line != null) {
-                Counter++;
+                lineCounter.incrementAndGet();
                 line = br.readLine();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        addToLineCounter(Counter);
     }
 
 
-    public synchronized void addToLineCounter(int count) {
-        lineCounter += count;
-    }
 
 }
