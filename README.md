@@ -14,7 +14,6 @@ This program demonstrates the use of multi-threading in Java to count the number
 
 ## Usage
 
-Y
 
 For `getNumOfLines(String[] fileNames)`= that uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the power of multi-threading, and since the program is waiting for each file to be read sequentially and counted before it proceeds to the next file.
 

@@ -7,7 +7,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 public class Tests {
-    public static final Logger logger = LoggerFactory.getLogger(Tests.class);
+    private static Logger LoggerFactory;
+    public static final Logger logger = LoggerFactory.getLogger(String.valueOf(Tests.class));
 
     @Test
     public void partialTest() {
@@ -49,6 +50,10 @@ public class Tests {
         logger.info(() -> "Reversed String = " + reversed);
         logger.info(() -> String.valueOf("Total Price = " + totalPrice));
         logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
+       // System.out.println(customExecutor);
+        System.out.println(customExecutor.getQueue());
+
         customExecutor.gracefullyTerminate();
+
     }
 }
