@@ -91,13 +91,15 @@ will affect the time elapsed and see how every approach managed to do.
 
 
 ### Conclusion
-For `getNumOfLines(String[] fileNames)`= that uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the power of multi-threading, and since the program is waiting for each file to be read sequentially and counted before it proceeds to the next file.
+`getNumOfLines`= that uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the efficent of multi-threading, and since the program is waiting for each file to be read iterativly and calculated before it proceeds to the next file.
 
-For `getNumOfLinesThreads(String[] fileNames)` and `getNumOfLinesThreadPool(String[] fileNames)` both of them are using multi-threading to count the lines, but they have different way of handling threads, and it may lead to different performance.
+ `getNumOfLinesThreads` and `getNumOfLinesThreadPool` both of them are using multi-threading to count the lines, but they have different way of handling threads,in our tests we can see that using ThreadPool in a big workload (lots of file &lines) is more efficient than using multi-threading without the executer service. This can happen because:
 
-`getNumOfLinesThreads(String[] fileNames)` creates a thread for each file that is being read, which can consume more resources, but it also enables the program to handle each file independently.
+`getNumOfLinesThreads` creates a thread for each file that is being read, which can consume more resources, but it also enables the program to handle each file independently, therefore in high workload it will be less efficent than reusing threads we created, its important to mention that for each thread we create,it takes the system roughly 1MB of ram if using Unix based OS, and for Windows OS it will take roughly 512KB. 
 
 `getNumOfLinesThreadPool(String[] fileNames)` uses a fixed thread pool that creates a set number of threads, this allows for more efficient use of resources, since threads can be reused for multiple tasks, but it may also limit the program's ability to handle each file independently, since the threads in the pool are shared among all files.
+
+to sum up: we can see that it is depends on what we are going to do with our program, but for the most use-cases we should implement the Executer-service and use a ThreadPool for more efficient and faster preformence.
 
 
 
