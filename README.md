@@ -63,11 +63,30 @@ will affect the time elapsed and see how every approach managed to do.
   | getNumOfLinesThreads  | 34  | 638603  |
   | getNumOfLinesThreadPool  | 53  | 638603  |
 
-- In the second run, we created 500 files, each containing a random number of lines between 0 and a maximum of 25000 lines.
+- In the second run, we created 500 files, each containing a random number of lines between 0 and a maximum of 75000 lines.
+
+| Method | Runtime(ms) | Sum of Lines |
+  | -------- | -------- | -------- |
+| getNumOfLines  | 476  | 18186103  |
+| getNumOfLinesThreads  | 172  | 18186103  |
+| getNumOfLinesThreadPool  | 172  | 18186103  |
+
 
 - In the third run, we created 3000 files, each containing a random number of lines between 0 and a maximum of 2500 lines.
 
-- In the fourth run, we created 3000 files, each containing a random number of lines between 0 and a maximum of 25000 lines.
+| Method | Runtime(ms) | Sum of Lines |
+  | -------- | -------- | -------- |
+| getNumOfLines  | 178  | 3685966  |
+| getNumOfLinesThreads  | 149  | 3685966  |
+| getNumOfLinesThreadPool  | 171  | 3685966  |
+
+- In the fourth run, we created 3000 files, each containing a random number of lines between 0 and a maximum of 75000 lines.
+
+| Method | Runtime(ms) | Sum of Lines |
+  | -------- | -------- | -------- |
+  | getNumOfLines  | 2787  | 109993466  |
+  | getNumOfLinesThreads  | 835  | 109993466  |
+  | getNumOfLinesThreadPool  | 907  | 109993466  |
 
 
 
