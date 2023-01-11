@@ -96,7 +96,7 @@ will affect the time elapsed and see how every approach managed to do.
 both of `getNumOfLinesThreads` and `getNumOfLinesThreadPool` are using multi-threading to count the lines, but they have different way of handling threads,in our tests we can see that using ThreadPool in a big workload (lots of file &lines) is more efficient than using multi-threading without the executer service.
 This can happen because:
 
-`getNumOfLinesThreads` creates a thread for each file that is being read, which can consume more resources, but it also enables the program to handle each file independently, therefore in high workload it will be less efficent than reusing threads we created, its important to mention that for each thread we create,it takes the system roughly 1MB of ram if using Unix based OS, and for Windows OS it will take roughly 512KB. 
+`getNumOfLinesThreads` creates a thread for each file that is being read, which can consume more resources, but it also enables the program to handle each file independently, therefore in high workload it will be less efficent than reusing threads we created, its important to mention that for each thread we create,it takes the JVM system roughly 1MB of ram if using Unix based OS, and for Windows OS it will take roughly 512KB. 
 
 `getNumOfLinesThreadPool(String[] fileNames)` uses a fixed thread pool that creates a set number of threads, this allows for more efficient use of resources, since threads can be reused for multiple tasks, but it may also limit the program's ability to handle each file independently, since the threads in the pool are shared among all files.
 
