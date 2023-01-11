@@ -3,7 +3,7 @@ import java.util.concurrent.*;
 
 public class CustomExecutor {
     // giving argument Comparator.reverseOrder() to the queue because we want to prioritize from the minimal to maximal value
-    private final PriorityBlockingQueue queue=new PriorityBlockingQueue<>(10, Comparator.reverseOrder());
+    private final PriorityBlockingQueue queue=new PriorityBlockingQueue<>();
     private ThreadPoolExecutor executor;
     private final int poolSize;
     private int maxPriority;
@@ -14,6 +14,10 @@ public class CustomExecutor {
 
     }
 
+    public void setPoolSize(int n) {
+        this.executor.setCorePoolSize(n);
+    }
+
     public <V>Future<V> submit(Callable<V> call, TaskType type) {
 
         return submit(new Task<>(call,type));
@@ -22,9 +26,9 @@ public class CustomExecutor {
         return submit(new Task<>(call));
     }
     public <V>Future<V> submit(Task<V> task) {
-        queue.put(task.getTask());
-        maxPriority=Math.max(maxPriority, task.getPriority());
-    return executor.submit(task.getTask());
+        TaskWrapper<V> warpper= new TaskWrapper<>(task, task.getPriority());
+        queue.put(warpper);
+        return executor.submit(warpper.getTask());
     }
 
     private void waitForTermination() {

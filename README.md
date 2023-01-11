@@ -1,27 +1,29 @@
-# Multi-Threading File Line Counter
+# Part1  LineCounting
 
-This program demonstrates the use of multi-threading in Java to count the number of lines in a large number of text files. It includes three methods for counting the lines, each with a different approach for handling the threads.
+This program demonstrates the use of multi-threading in Java to count the number of lines in a large number of text files.
+It includes three methods for counting the lines, each with a different approach for handling the threads.
+- getNumOfLines(String[] fileNames)
+- getNumOfLinesThreads(String[] fileNames)
+- getNumOfLinesThreadPool(String[] fileNames)
+
+## Table of Contents-Part1
+- [Methods](#Methods)
+- [Class dependencies](#Class dependencies)
+- [Comparing Each Approach](#Comparing Each Approach)
+
 
 ## Methods
 
-- `createTextFiles(int n, int seed, int bound)`: A helper method that creates n text files with random number of lines between 0 and bound.
+- `createTextFiles(int n, int seed, int bound)`: A helper method that creates 'n' text files with random number of lines between 0 and bound.
 
-- `getNumOfLines(String[] fileNames)`: A method that reads all files sequentially and counts the number of lines, uses a single thread, and returns the total number of lines.
+- `getNumOfLines(String[] fileNames)`: A method that reads all files iteratively and counts the number of lines, uses a single thread, and returns the total number of lines.
 
-- `getNumOfLinesThreads(String[] fileNames)`: A method that uses multiple threads to read the files and count the number of lines in each file concurrently and returns the total number of lines. each threadFileHelper object is now extend Thread class and using atomic integer for counting
+- `getNumOfLinesThreads(String[] fileNames)`: A method that uses multiple threads to read the files and count the number of lines in each file concurrently and returns the total number of lines after all the threads are done. 
 
-- `getNumOfLinesThreadPool(String[] fileNames)`: A method that uses a fixed thread pool to read the files and count the number of lines in each file concurrently and returns the total number of lines.
+- `getNumOfLinesThreadPool(String[] fileNames)`: A method that uses a fixed(number of txt files) thread pool to read the files and count the number of lines in each file concurrently and returns the total number of lines.
+like in the Threads method, each thread will read a file and after all the threads are done it will be added to the "SumOfLine" variable.
 
-## Usage
-
-
-For `getNumOfLines(String[] fileNames)`= that uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the power of multi-threading, and since the program is waiting for each file to be read sequentially and counted before it proceeds to the next file.
-
-For `getNumOfLinesThreads(String[] fileNames)` and `getNumOfLinesThreadPool(String[] fileNames)` both of them are using multi-threading to count the lines, but they have different way of handling threads, and it may lead to different performance.
-
-`getNumOfLinesThreads(String[] fileNames)` creates a thread for each file that is being read, which can consume more resources, but it also enables the program to handle each file independently.
-
-`getNumOfLinesThreadPool(String[] fileNames)` uses a fixed thread pool that creates a set number of threads, this allows for more efficient use of resources, since threads can be reused for multiple tasks, but it may also limit the program's ability to handle each file independently, since the threads in the pool are shared among all files.
+## Class dependencies
 
 ```mermaid
 classDiagram
@@ -49,3 +51,44 @@ Ex2_1  ..>  MyCallable : «create»
 Ex2_1  ..>  threadFileHelper : «create»
 
 ```
+
+## Comparing Each Approach
+we ran this program 4 times with different amount of files and line in each run, we wanted to see how much of a difference the amount of files / the amount of lines in the file
+will affect the time elapsed and see how every approach managed to do.
+- In the first run, we created 500 files, each containing a random number of lines between 0 and a maximum of 2500 lines:
+ 
+| Method | Runtime(ms) | Sum of Lines |
+  | -------- | -------- | -------- |
+  | getNumOfLines  | 59  | 638603  |
+  | getNumOfLinesThreads  | 34  | 638603  |
+  | getNumOfLinesThreadPool  | 53  | 638603  |
+
+- In the second run, we created 500 files, each containing a random number of lines between 0 and a maximum of 25000 lines.
+
+- In the third run, we created 3000 files, each containing a random number of lines between 0 and a maximum of 2500 lines.
+
+- In the fourth run, we created 3000 files, each containing a random number of lines between 0 and a maximum of 25000 lines.
+
+
+
+### Conclusion
+For `getNumOfLines(String[] fileNames)`= that uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the power of multi-threading, and since the program is waiting for each file to be read sequentially and counted before it proceeds to the next file.
+
+For `getNumOfLinesThreads(String[] fileNames)` and `getNumOfLinesThreadPool(String[] fileNames)` both of them are using multi-threading to count the lines, but they have different way of handling threads, and it may lead to different performance.
+
+`getNumOfLinesThreads(String[] fileNames)` creates a thread for each file that is being read, which can consume more resources, but it also enables the program to handle each file independently.
+
+`getNumOfLinesThreadPool(String[] fileNames)` uses a fixed thread pool that creates a set number of threads, this allows for more efficient use of resources, since threads can be reused for multiple tasks, but it may also limit the program's ability to handle each file independently, since the threads in the pool are shared among all files.
+
+
+
+
+
+
+
+# Part2 Custom Executor service for Threadpool
+
+## Table of Contents-Part2
+- [Methods](#Methods)
+- [Comparing each approach](#Usage)
+- [Conclusion](#Conclusion)

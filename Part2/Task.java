@@ -4,9 +4,9 @@ import java.util.concurrent.Callable;
 
 public class Task<V> implements Callable<V> {
     //Data
-private final Callable<V> task;
-private final TaskType type;
-// Constructors
+    private final Callable<V> task;
+    private final TaskType type;
+    // Constructors
     public Task(Callable<V> task, TaskType type) {
         this.task = task;
         this.type = type;
