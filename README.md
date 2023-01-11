@@ -91,7 +91,7 @@ will affect the time elapsed and see how every approach managed to do.
 
 
 ### Conclusion
-`getNumOfLines`= that uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the efficent of multi-threading, and since the program is waiting for each file to be read iterativly and calculated before it proceeds to the next file.
+`getNumOfLines` uses a single thread, it takes longer time to count the lines in all files, it is slower than the other two methods since it is not utilizing the efficent of multi-threading, and since the program is waiting for each file to be read iterativly and calculated before it proceeds to the next file.
 
  `getNumOfLinesThreads` and `getNumOfLinesThreadPool` both of them are using multi-threading to count the lines, but they have different way of handling threads,in our tests we can see that using ThreadPool in a big workload (lots of file &lines) is more efficient than using multi-threading without the executer service. This can happen because:
 
