@@ -8,8 +8,8 @@ It includes three methods for counting the lines, each with a different approach
 
 ## Table of Contents-Part1
 - [Methods](#Methods)
-- [Class dependencies](#Class dependencies)
-- [Comparing Each Approach](#Comparing Each Approach)
+- [Class dependencies](#Class-dependencies)
+- [Comparing Each Approach](#Comparing-Each-Approach)
 
 
 ## Methods
