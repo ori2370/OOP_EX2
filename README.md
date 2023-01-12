@@ -136,7 +136,6 @@ priority queue for the tasks, which allows for tasks to be executed in order of 
 - [Difficulties Encountered](#Difficulties-Encountered)
 - [How Difficulties were Handled](#How-Difficulties-were-Handled)
 - [Design Contribution](#Design-Contribution)
--
 
 ```mermaid
 classDiagram
