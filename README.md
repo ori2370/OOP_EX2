@@ -69,7 +69,7 @@ will affect the time elapsed and see how every approach managed to do.
   lines:
 
 | Method | Runtime(ms) | Sum of Lines |
--------------------------| -------- | -------- | -------- |
+-------------------------| -------- | -------- | --------- |
 | getNumOfLines | 2759 | 638603 |
 | getNumOfLinesThreads | 114 | 638603 |
 | getNumOfLinesThreadPool | 107 | 638603 |
