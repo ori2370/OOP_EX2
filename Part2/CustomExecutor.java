@@ -1,66 +1,56 @@
-import java.util.Comparator;
 import java.util.concurrent.*;
 
-public class CustomExecutor {
-    // giving argument Comparator.reverseOrder() to the queue because we want to prioritize from the minimal to maximal value
-    private final PriorityBlockingQueue queue=new PriorityBlockingQueue<>();
-    private ThreadPoolExecutor executor;
-    private final int poolSize;
-    private int maxPriority;
+public class CustomExecutor extends ThreadPoolExecutor {
+    private int highestPriority;
 
     public CustomExecutor() {
-        this.poolSize=Runtime.getRuntime().availableProcessors();
-        this.executor=new ThreadPoolExecutor(poolSize/2,poolSize-1,300,TimeUnit.MILLISECONDS,queue );
-
+        super(Runtime.getRuntime().availableProcessors() / 2, Runtime.getRuntime().availableProcessors() - 1, 300, TimeUnit.MILLISECONDS, new PriorityBlockingQueue<>());
     }
 
-    public void setPoolSize(int n) {
-        this.executor.setCorePoolSize(n);
+    public <V> Future<V> submit(Task<V> task) {
+        ComparableFuture<V> future = new ComparableFuture<>(task);
+        super.execute(future);
+        return future;
     }
 
-    public <V>Future<V> submit(Callable<V> call, TaskType type) {
+    public <V> Future<V> submit(Callable<V> call, TaskType type) {
+        return this.submit(new Task<V>(call, type));
+    }
 
-        return submit(new Task<>(call,type));
-    }
-    public <V>Future<V> submit(Callable<V> call) {
-        return submit(new Task<>(call));
-    }
-    public <V>Future<V> submit(Task<V> task) {
-        TaskWrapper<V> warpper= new TaskWrapper<>(task, task.getPriority());
-        queue.put(warpper);
-        return executor.submit(warpper.getTask());
+    public <V> Future<V> submit(Callable<V> call) {
+        return this.submit(new Task<V>(call));
     }
 
     private void waitForTermination() {
         try {
-            if (!executor.awaitTermination(300, TimeUnit.MILLISECONDS)) {
-                executor.shutdownNow();
+            if (!super.awaitTermination(300, TimeUnit.MILLISECONDS)) {
+                super.shutdownNow();
             }
         } catch (InterruptedException e) {
-            executor.shutdownNow();
+            super.shutdownNow();
         }
     }
 
     public void gracefullyTerminate() {
-        executor.shutdown();
-       waitForTermination();
-    }
-
-    public PriorityBlockingQueue getQueue() {
-        return queue;
+        super.shutdown();
+        waitForTermination();
     }
 
     public int getCurrentMax() {
-
-        return maxPriority;
+        return highestPriority;
     }
 
     @Override
-    public String toString() {
-        return "CustomExecutor{" +
-                "queue=" + queue +
-                ", executor=" + executor +
-                ", poolSize=" + poolSize +
-                '}';
+    protected void beforeExecute(Thread t, Runnable r) {
+        super.beforeExecute(t, r);
+        this.highestPriority = ((ComparableFuture<?>) r).getPriority();
+    }
+
+    @Override
+    protected void afterExecute(Runnable r, Throwable t) {
+        super.afterExecute(r, t);
+        if (this.getQueue().peek() == null) {
+            this.highestPriority = -1;
+        }
     }
 }

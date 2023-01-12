@@ -6,6 +6,7 @@ public class Task<V> implements Callable<V> {
     //Data
     private final Callable<V> task;
     private final TaskType type;
+
     // Constructors
     public Task(Callable<V> task, TaskType type) {
         this.task = task;
@@ -14,10 +15,10 @@ public class Task<V> implements Callable<V> {
 
     public Task(Callable<V> task) {
         this.task = task;
-        this.type=TaskType.OTHER;
+        this.type = TaskType.OTHER;
     }
 
-//methods
+    //methods
     public static <V> Task<V> createTask(Callable<V> task, TaskType type) {
         return new Task<V>(task, type);
     }
@@ -55,5 +56,4 @@ public class Task<V> implements Callable<V> {
         Task<?> task1 = (Task<?>) o;
         return Objects.equals(getTask(), task1.getTask()) && getType() == task1.getType();
     }
-
 }

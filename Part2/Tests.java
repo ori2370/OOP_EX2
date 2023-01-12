@@ -1,39 +1,23 @@
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.logging.Logger;
+import org.junit.platform.commons.logging.LoggerFactory;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.concurrent.*;
 
 public class Tests {
-    private static Logger LoggerFactory;
-    public static final Logger logger = LoggerFactory.getLogger(String.valueOf(Tests.class));
+    public static final Logger logger = LoggerFactory.getLogger(Tests.class);
 
     @Test
     public void partialTest() {
         CustomExecutor customExecutor = new CustomExecutor();
-
-
         var task = Task.createTask(() -> {
             int sum = 0;
             for (int i = 1; i <= 10; i++) {
                 sum += i;
             }
             return sum;
-        }, TaskType.OTHER);
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
-
-        var priceTask = customExecutor.submit(() -> {
-            return 1000 * Math.pow(1.02, 5);
         }, TaskType.COMPUTATIONAL);
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
-
-        Task<Double> PowTask = Task.createTask(() ->{
-            return 1000 * Math.pow(3, 5);
-                },TaskType.COMPUTATIONAL);
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
-
         var sumTask = customExecutor.submit(task);
         final int sum;
         try {
@@ -41,15 +25,18 @@ public class Tests {
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             throw new RuntimeException(e);
         }
-
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
         logger.info(() -> "Sum of 1 through 10 = " + sum);
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
+        Callable<Double> callable1 = () -> {
+            return 1000 * Math.pow(1.02, 5);
+        };
         Callable<String> callable2 = () -> {
             StringBuilder sb = new StringBuilder("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
             return sb.reverse().toString();
         };
-
+        // var is used to infer the declared type automatically
+        var priceTask = customExecutor.submit(() -> {
+            return 1000 * Math.pow(1.02, 5);
+        }, TaskType.COMPUTATIONAL);
         var reverseTask = customExecutor.submit(callable2, TaskType.IO);
         final Double totalPrice;
         final String reversed;
@@ -59,18 +46,50 @@ public class Tests {
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
         logger.info(() -> "Reversed String = " + reversed);
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
         logger.info(() -> String.valueOf("Total Price = " + totalPrice));
-        logger.info(() -> "Current maximum priority = " + customExecutor.getCurrentMax());
-        System.out.println(customExecutor);
-        System.out.println(customExecutor.getQueue());
-
+        logger.info(() -> "Current maximum priority = " +
+                customExecutor.getCurrentMax());
         customExecutor.gracefullyTerminate();
+    }
 
+    @Test
+    public void anotherTest() {
+        CustomExecutor customExecutor = new CustomExecutor();
+        ArrayList<Future<Integer>> results = new ArrayList<>();
+        int count = 10;
+        for (int i = 0; i < count; i++) {
+            TaskType taskType = TaskType.OTHER;
+            if (i % 3 == 1) {
+                taskType = TaskType.IO;
+            } else if (i % 3 == 0) {
+                taskType = TaskType.COMPUTATIONAL;
+            }
+
+            final TaskType finalType = taskType;
+            final int taskIndex = i;
+            logger.info(() -> "Inserting Task #" + taskIndex + " with Type = " + finalType);
+
+            var task = Task.createTask(() -> {
+                logger.info(() -> "Starting work of Task #" + taskIndex + " with Type = " + finalType);
+
+                Thread.sleep(5000);
+                return taskIndex;
+            }, finalType);
+
+            results.add(customExecutor.submit(task));
+        }
+
+        try {
+            int highestPriority = customExecutor.getCurrentMax();
+            while (highestPriority > 0) {
+                final int priority = highestPriority;
+                logger.info(() -> "Current highest priority in queue is = " + priority);
+                Thread.sleep(500);
+                highestPriority = customExecutor.getCurrentMax();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
-
-
-
